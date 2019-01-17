@@ -5,9 +5,8 @@
 int main() {
     /** Файл для тестирования esl.h **/
     /** File for testing esl.h **/
-	usi first[2] = { 1, 0 };
-	usi second[2] = { 0, 0 };
-	bus(first, second, 2, 2);
-	printf("%d\t%d", second[0], second[1]);
+	analogMode = 1;
+	limit = 5;
+	error(isAnalog(0));
     return 0;
 }

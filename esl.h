@@ -31,6 +31,7 @@ AUTOR Centrix
 // Макросы для сообщений об ошибках
 #define BTE -1
 #define PVE -2
+#define AVE -3
 
 typedef unsigned short int usi;
 
@@ -96,6 +97,8 @@ void error(int type);
 
 /* Глобальные переменные (Global variables) */
 usi imp = 0;
+usi analogMode = 0;
+double limit;
 
 usi Output4[4];
 usi Output8[8];
@@ -752,17 +755,30 @@ int isPoly(poly p) {
 	return out;
 }
 
+int isAnalog(double signal) {
+	int out = 0;
+	if (signal <= limit && signal != 0 && analogMode == 1) {
+		out = 1;
+	}
+	else {
+		out = AVE;
+	}
+	return out;
+}
+
 /* Индетефицирует ошибки */
 /* В эту функцию передаются коды ошибок, а она их обрабатывает */
 void error(int type) {
 	if (type == BTE) {
 		printf("BTE (Bool Type Error). The type being passed is not logical.\n");
-		system("pause");
 	}
 	else if (type == PVE) {
 		printf("\nPVE (Polytype Value Error). Polytype field values are not equal.\n");
-		system("pause");
 	}
+	else if (type == AVE) {
+		printf("\nAVE (Analog Value Error). The value passed is not analog.\n");
+	}
+	system("pause");
 }
 
 /* Создание собственных элементов через таблицы истинности */
