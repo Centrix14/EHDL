@@ -6,7 +6,8 @@ int main() {
     /** Файл для тестирования esl.h **/
     /** File for testing esl.h **/
 	analogMode = 1;
-	limit = 5;
-	error(isAnalog(0));
+	limit = 3.3;
+	printf("%d", transistor(5, 5));
+
     return 0;
 }

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 /**
-Logic v0.11.3
+Logic v0.12.0
 The program is designed to simulate logic circuits and elements
 Date 16.01.2019
 AUTOR Centrix
@@ -32,6 +32,9 @@ AUTOR Centrix
 #define BTE -1
 #define PVE -2
 #define AVE -3
+
+// Макросы для описания аналоговых состояний
+#define z -1
 
 typedef unsigned short int usi;
 
@@ -88,6 +91,8 @@ void regDec(usi reg[], usi len);
 int castElm(elm e);
 int customElm43(usi table[4][3], usi i1, usi i2);
 int bus(usi input[], usi output[], usi lenIn, usi lenOut); 
+int toBool(double signal);
+int transistor(double signalCon, double signalMain);
 /* Система поиска ошибок */
 int isBool(usi value); 
 int isBoola(usi values[], usi len);
@@ -99,6 +104,7 @@ void error(int type);
 usi imp = 0;
 usi analogMode = 0;
 double limit;
+const double maximum = 15.0;
 
 usi Output4[4];
 usi Output8[8];
@@ -755,9 +761,10 @@ int isPoly(poly p) {
 	return out;
 }
 
+/* Функция проверяет является ли переданный ей аргумент допустимым аналоговым значением */
 int isAnalog(double signal) {
 	int out = 0;
-	if (signal <= limit && signal != 0 && analogMode == 1) {
+	if (((signal <= limit || signal >= limit) && signal <= maximum) && signal != 0 && analogMode == 1) {
 		out = 1;
 	}
 	else {
@@ -771,14 +778,16 @@ int isAnalog(double signal) {
 void error(int type) {
 	if (type == BTE) {
 		printf("BTE (Bool Type Error). The type being passed is not logical.\n");
+		system("pause");
 	}
 	else if (type == PVE) {
 		printf("\nPVE (Polytype Value Error). Polytype field values are not equal.\n");
+		system("pause");
 	}
 	else if (type == AVE) {
 		printf("\nAVE (Analog Value Error). The value passed is not analog.\n");
+		system("pause");
 	}
-	system("pause");
 }
 
 /* Создание собственных элементов через таблицы истинности */
@@ -815,6 +824,32 @@ int bus(usi input[], usi output[], usi lenIn, usi lenOut) {
 	if (input) {
 		out = 1;
 	}
+	return out;
+}
+
+/* Функция приводящая аналоговое значение к двоичному */
+int toBool(double signal) {
+	usi out = 0;
+	error(isAnalog(signal));
+
+	if (signal >= limit) {
+		out = 1;
+	}
+	else { ; }
+	return out;
+}
+
+/* Функция реализующая транзистор */
+int transistor(double signalCon, double signalMain) {
+	usi out = 0;
+	error(isAnalog(signalCon));
+	error(isAnalog(signalMain));
+
+	if (toBool(signalCon) == 1) {
+		out = signalMain;
+	}
+	else { ; }
+
 	return out;
 }
 
