@@ -9,7 +9,7 @@
 /**
 Logic v0.12.0
 The program is designed to simulate logic circuits and elements
-Date 16.01.2019
+Date 19.01.2019
 AUTOR Centrix
 **/
 
@@ -78,12 +78,12 @@ int conBuff(usi conSignal, usi mainSignal);
 int conInv(usi conSignal, usi mainSignal);
 int d_trigg(usi dataIn, usi powerIn, usi digits);
 /* Дополнительные функции */
-void setInput(usi args[], usi len, usi digits);
+void setInput(usi args[], usi* port[], usi len);
 int button();
 int impulse(usi doIt);
 void SevenSegmentIndicator(usi pins[]);
 void SSI_SimpleOutput(char character);
-void Result(usi digits);
+void Result(usi data[], usi len);
 void regInversion(usi reg[], usi len);
 void regSetValue(usi reg[], usi values[], usi len);
 void regInc(usi reg[], usi len);
@@ -149,26 +149,13 @@ usi lettR[8] = {1, 1, 1, 0, 0, 0, 0, 1};
 usi lettU[8] = {0, 1, 1, 1, 1, 1, 0, 1};
 
 /* Выбор вводимых значений (Selecting input values) */
-void setInput(usi args[], usi len, usi digits) {
-    usi i = 0;
+void setInput(usi args[], usi* port[], usi len) {
 	
 	error(isBoola(args, len));
 	
-    switch (digits) {
-    case 4:
-        while (i < 4) {
-            Input4[i] = args[i];
-            i++;
-        }
-        break;
-
-    case 8:
-        while (i < 8) {
-            Input4[i] = args[i];
-            i++;
-        }
-		break;
-    }
+	for (int i = 0; i < len; i++) {
+		port[i] = (usi*) args[i];
+	}
 }
 
 /* Кнопка возвращает 1 когда какая - либо кнопка нажата (Button returns 1 when any button is pressed) */
@@ -235,30 +222,10 @@ void regInversion(usi reg[], usi len) {
 }
 
 /* Вывод значений (The output values) */
-void Result(usi digits) {
-    if (digits == 4) {
-        printf("Input: ");
-        for (usi i = 0; i < 4; i++) {
-            printf("%d", Input4[i]);
-        }
-
-        printf("\nOutput: ");
-        for (usi i = 0; i < 4; i++) {
-            printf("%d", Output4[i]);
-        }
-    }
-
-    else if (digits == 8) {
-        printf("Input: ");
-        for (usi i = 0; i < 8; i++) {
-            printf("%d", Input4[i]);
-        }
-
-        printf("\nOutput: ");
-        for (usi i = 0; i < 8; i++) {
-            printf("%d", Output4[i]);
-        }
-    }
+void Result(usi data[], usi len) {
+	for (int i = 0; i < len; i++) {
+		printf("%d", data[i]);
+	}
 }
 
 /**
