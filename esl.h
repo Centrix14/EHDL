@@ -7,9 +7,9 @@
 #include <stdlib.h>
 
 /**
-Logic v0.12.0
+Logic v0.12.1
 The program is designed to simulate logic circuits and elements
-Date 19.01.2019
+Date 24.01.2019
 AUTOR Centrix
 **/
 
@@ -35,6 +35,9 @@ AUTOR Centrix
 
 // Макросы для описания аналоговых состояний
 #define z -1
+
+// Макрос обозначающий конец массива
+#define en 14
 
 typedef unsigned short int usi;
 
@@ -68,17 +71,17 @@ typedef struct {
 
 /* Прототипы функций (Function prototype) */
 /* Элементы */
-int And(usi args[], usi len, usi digits);
-int Or(usi args[], usi len, usi digits);
-int Not(usi i1, usi digits);
-int Nand(usi args[], usi len, usi digits);
-int Xor(usi args[], usi len, usi digits);
-int Nor(usi args[], usi len, usi digits);
+int And(usi args[], usi* out);
+int Or(usi args[], usi* out);
+int Not(usi i1, usi* out);
+int Nand(usi args[], usi* out);
+int Xor(usi args[], usi* out);
+int Nor(usi args[], usi* out);
 int conBuff(usi conSignal, usi mainSignal);
 int conInv(usi conSignal, usi mainSignal);
 int d_trigg(usi dataIn, usi powerIn, usi digits);
 /* Дополнительные функции */
-void setInput(usi args[], usi* port[], usi len);
+void setInput(usi* args, usi* port, usi len);
 int button();
 int impulse(usi doIt);
 void SevenSegmentIndicator(usi pins[]);
@@ -93,6 +96,7 @@ int customElm43(usi table[4][3], usi i1, usi i2);
 int bus(usi input[], usi output[], usi lenIn, usi lenOut); 
 int toBool(double signal);
 int transistor(double signalCon, double signalMain);
+usi getLen(usi* arr);
 /* Система поиска ошибок */
 int isBool(usi value); 
 int isBoola(usi values[], usi len);
@@ -149,12 +153,12 @@ usi lettR[8] = {1, 1, 1, 0, 0, 0, 0, 1};
 usi lettU[8] = {0, 1, 1, 1, 1, 1, 0, 1};
 
 /* Выбор вводимых значений (Selecting input values) */
-void setInput(usi args[], usi* port[], usi len) {
+void setInput(usi* args, usi* port, usi len) {
 	
 	error(isBoola(args, len));
 	
 	for (int i = 0; i < len; i++) {
-		port[i] = (usi*) args[i];
+		port[i] = args[i];
 	}
 }
 
@@ -432,13 +436,14 @@ int d_trigg(usi dataIn, usi powerIn, usi digits) {
 }
 
 /* Элемент (элм) И */
-int And(usi args[], usi len, usi digits) {
+int And(usi args[], usi* out) {
 
-	error(isBoola(args, len));
+	error(isBoola(args, getLen(args)));
 
     usi i = 0;
     usi sum = 0;
-    usi out = 0;
+    usi output = 0;
+	usi len = getLen(args);
 
     while (i < len) {
         sum += args[i];
@@ -446,34 +451,26 @@ int And(usi args[], usi len, usi digits) {
     }
 
     if (sum == len) {
-        if (digits == 4) {
-            Output4[3] = 1;
-        }
-        else if (digits == 8) {
-            Output8[7] = 1;
-        }
-        out = 1;
+		out[len - 1] = 1;
+        output = 1;
     }
     else {
-        if (digits == 4) {
-            Output4[3] = 0;
-        }
-        else if (digits == 8) {
-            Output8[7] = 0;
-        }
+		out[len - 1] = 0;
     }
+
     impulse(0);
-    return out;
+    return output;
 }
 
 /* элм ИЛИ */
-int Or(usi args[], usi len, usi digits) {
+int Or(usi args[], usi* out) {
 
-	error(isBoola(args, len));
+	error(isBoola(args, getLen(args)));
 
     usi i = 0;
     usi sum = 0;
-    usi out = 0;
+    usi output = 0;
+	usi len = getLen(args);
 
     while (i < len) {
         sum += args[i];
@@ -481,50 +478,38 @@ int Or(usi args[], usi len, usi digits) {
     }
 
     if (sum > 1) {
-        if (digits == 4) {
-            Output4[3] = 1;
-        }
-        else if (digits == 8) {
-            Output8[7] = 1;
-        }
-        out = 1;
+		out[len - 1] = 1;
+        output = 1;
     }
     else {
-        if (digits == 4) {
-            Output4[3] = 0;
-        }
-        else if (digits == 8) {
-            Output8[7] = 0;
-        }
-        out = 0;
+		out[len - 1] = 0;
+        output = 0;
     }
+
     impulse(0);
-    return out;
+    return output;
 }
 
 /* элм НЕ */
-int Not(usi i1, usi digits) {
+int Not(usi i1, usi* out) {
 
 	error(isBool(i1));
 
-    if (digits == 4) {
-        Output4[3] = !i1;
-    }
-    else if (digits == 8) {
-        Output8[7] = !i1;
-    }
+	out = (usi*) !i1;
+
     impulse(0);
     return !i1;
 }
 
 /* элм НЕ-И */
-int Nand(usi args[], usi len, usi digits) {
+int Nand(usi args[], usi* out) {
 
-	error(isBoola(args, len));
+	error(isBoola(args, getLen(args)));
 
     usi sum = 0;
     usi i = 0;
-    usi out = 0;
+    usi output = 0;
+	usi len = getLen(args);
 
     while (i < len) {
         sum += args[i];
@@ -532,34 +517,26 @@ int Nand(usi args[], usi len, usi digits) {
     }
 
     if (sum == 0) {
-        if (digits == 4) {
-            Output4[3] = 1;
-        }
-        else if (digits == 8) {
-            Output8[7] = 1;
-        }
-        out = 1;
+		out[len - 1] = 1;
+        output = 1;
     }
     else {
-        if (digits == 4) {
-            Output4[3] = 0;
-        }
-        else if (digits == 8) {
-            Output8[7] = 0;
-        }
+		out[len - 1] = 0;
     }
+
     impulse(0);
-    return out;
+    return output;
 }
 
 /* элм XOR */
-int Xor(usi args[], usi len, usi digits) {
+int Xor(usi args[], usi* out) {
 
-	error(isBoola(args, len));
+	error(isBoola(args, getLen(args)));
 
     usi sum = 0;
     usi i = 0;
-    usi out = 0;
+    usi output = 0;
+	usi len = getLen(args);
 
     while (i < len) {
         sum += args[i];
@@ -567,44 +544,31 @@ int Xor(usi args[], usi len, usi digits) {
     }
 
     if (sum == len) {
-        if (digits == 4) {
-            Output4[3] = 0;
-        }
-        else if (digits == 8) {
-            Output8[7] = 0;
-        }
-        out = 0;
+		out[len - 1] = 0;
+        output = 0;
     }
     else if (sum == 0) {
-        if (digits == 4) {
-            Output4[3] = 0;
-        }
-        else if (digits == 8) {
-            Output8[7] = 0;
-        }
-        out = 1;
+		out[len - 1] = 1;
+        output = 1;
     }
     else if (sum > 0) {
-        if (digits == 4) {
-            Output4[3] = 1;
-        }
-        else if (digits == 8) {
-            Output8[7] = 1;
-        }
-        out = 1;
+		out[len - 1] = 1;
+        output = 1;
     }
+
     impulse(0);
-    return out;
+    return output;
 }
 
 /* элм НЕ-ИЛИ */
-int Nor(usi args[], usi len, usi digits) {
+int Nor(usi args[], usi* out) {
 
-	error(isBoola(args, len));
+	error(isBoola(args, getLen(args)));
 
     usi sum = 0;
     usi i = 0;
-    usi out = 0;
+    usi output = 0;
+	usi len = getLen(out);
 
     while (i < len) {
         sum += args[i];
@@ -612,24 +576,15 @@ int Nor(usi args[], usi len, usi digits) {
     }
 
     if (sum == 0) {
-        if (digits == 4) {
-            Output4[3] = 1;
-        }
-        else if (digits == 8) {
-            Output8[7] = 1;
-        }
-        out = 1;
+		out[len - 1] = 1;
+        output = 1;
     }
     else if (sum == len || sum < len) {
-        if (digits == 4) {
-            Output4[3] = 0;
-        }
-        else if (digits == 8) {
-            Output8[7] = 0;
-        }
+		out[len - 1] = 0;
     }
+
     impulse(0);
-    return out;
+    return output;
 }
 
 /* Возвращает результат работы элемента elm */
@@ -673,7 +628,7 @@ int castElm(elm e) {
 /* Функция проверяющаа что переданный ей аргумент имеет булево значение */
 int isBool(usi value) {
 	int out = 0;
-	if (value == 0 || value == 1) {
+	if (value == 0 || value == 1 || value == en) {
 		out = 1;
 	}
 	else {
@@ -744,7 +699,7 @@ int isAnalog(double signal) {
 /* В эту функцию передаются коды ошибок, а она их обрабатывает */
 void error(int type) {
 	if (type == BTE) {
-		printf("BTE (Bool Type Error). The type being passed is not logical.\n");
+		printf("\nBTE (Bool Type Error). The type being passed is not logical.\n");
 		system("pause");
 	}
 	else if (type == PVE) {
@@ -818,6 +773,16 @@ int transistor(double signalCon, double signalMain) {
 	else { ; }
 
 	return out;
+}
+
+usi getLen(usi* arr) {
+	usi i = 0;
+
+	while (arr[i] != en) {
+		i++;
+	}
+
+	return i;
 }
 
 #endif // ESL_H_INCLUDED

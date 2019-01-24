@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "esl.h"
-#include "ael.h"
 
 int main() {
-    /** Файл для тестирования esl.h **/
-    /** File for testing esl.h **/
-	usi s, pi;
-	halfadder(1, 1, &s, &pi);
-	printf("%d\t%d", s, pi);
+    /** Файл для тестирования EHDL_MWE **/
+    /** File for testing EHDL_MWE **/
+
+	usi in[3] = { 1, 1, en };
+	usi out[3] = { 0, 0, en };
+	And(in, out);
+	printf("%d\t\t%d", out[0], out[1]);
 
     return 0;
 }

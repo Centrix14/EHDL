@@ -32,6 +32,16 @@ usi ael_or(usi i1, usi i2) {
 	return out;
 }
 
+usi ael_or3(usi i1, usi i2, usi i3) {
+	usi out = 0;
+
+	if (i1 != 0 || i2 != 0 || i3 != 0) {
+		out = 1;
+	}
+
+	return out;
+}
+
 /* Двухвходный AND */
 usi ael_and(usi i1, usi i2) {
 	usi out = 0;
@@ -55,6 +65,13 @@ void summator(usi p, usi a, usi b, usi* s, usi* pi) {
 void halfadder(usi x, usi y, usi* s, usi* c) {
 	*s = ael_and(x, y);
 	*c = ael_xor(x, y);
+}
+
+void major(usi x1, usi x2, usi x3, usi* y) {
+	usi and1 = ael_and(x1, x2);
+	usi and2 = ael_and(x3, x2);
+	usi and3 = ael_and(x1, x3);
+	*y = ael_or3(and1, and2, and3);
 }
 
 #endif // AEL_H_INCLUDED
