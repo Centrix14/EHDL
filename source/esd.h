@@ -1,7 +1,11 @@
 #ifndef ESD_H_INCLUDED
 #define ESD_H_INCLUDED
 
-/* EHDL Standart Debuger v1.0 */
+/* 
+EHDL Standart Debuger v1.0
+28.01.2019
+by Centrix
+*/
 
 void go(int block1, int block2, int block3, int block4);
 void part1();

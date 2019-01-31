@@ -1,7 +1,11 @@
 #ifndef CBL_H_INCLUDED
 #define CBL_H_INCLUDED
 
-/* Circuit Builder v0.3 */
+/* 
+Circuit Builder v0.3
+28.01.2019
+by Centrix
+*/
 
 /* Индикатор конца массива */
 #define e -1

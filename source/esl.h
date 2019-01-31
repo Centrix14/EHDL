@@ -10,7 +10,7 @@
 Logic v0.12.2
 The program is designed to simulate logic circuits and elements
 Date 27.01.2019
-AUTOR Centrix
+by Centrix
 **/
 
 // ћакрос дл€ приведени€ примитовов к политипам

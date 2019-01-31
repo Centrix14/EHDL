@@ -10,7 +10,11 @@ void halfadder(usi x, usi y, usi* s, usi* c);
 void major(usi x1, usi x2, usi x3, usi* y);
 
 
-/* Добавочая библиотека EHDL v0.1*/
+/* 
+Добавочая библиотека EHDL v0.1 
+28.01.2019
+by Centrix
+*/
 
 /* Двухвходный XOR */
 usi ael_xor(usi i1, usi i2) {

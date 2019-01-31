@@ -1,7 +1,11 @@
 #ifndef TEC_H_INCLUDED
 #define TEC_H_INCLUDED
 
-/* Бибилиотека языка Tec */
+/* 
+Бибилиотека языка Tec
+28.01.2019
+by Centrix
+*/
 
 #define BTE -1
 #define flash register unsigned short int
